@@ -20,6 +20,7 @@ RUN apt-get -qq update \
         ghostscript \
         ffmpeg \
         libvips \
+        git \
     && apt-get clean \
     && apt-get autoclean
 
