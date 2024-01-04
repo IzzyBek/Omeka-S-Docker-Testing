@@ -14,7 +14,7 @@ return [
     'thumbnails' => [
         'types' => [
             'large' => ['constraint' => 1000],
-            'medium' => ['constraint' => 400],
+            'medium' => ['constraint' => 600],
             'square' => ['constraint' => 400],
         ],
         'thumbnailer_options' => [
