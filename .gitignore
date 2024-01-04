@@ -1,0 +1,19 @@
+.env
+
+# Exclude example.env
+!example.env
+database.ini
+
+# exclude everything
+files/*
+logs/*
+modules/*
+themes/*
+db/*
+
+# exception to the rule
+!files/.gitkeep
+!logs/.gitkeep
+!modules/.gitkeep
+!themes/.gitkeep
+!db/.gitkeep

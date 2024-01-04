@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  omeka-web:
+    build:
+      context: .
+    restart: "no"
+    ports:
+      - 8080:80
+    volumes:
+      - ./files:/var/www/omeka-s/files
+      - ./logs:/var/www/omeka-s/logs
+      - ./modules:/var/www/omeka-s/modules
+      - ./themes:/var/www/omeka-s/themes
+    environment:
+      - EMAIL_HOST=${EMAIL_HOST}
+      - EMAIL_PORT=${EMAIL_PORT}
+      - EMAIL_USER=${EMAIL_USER}
+      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
+      - EMAIL_CONNECTION_TYPE=${EMAIL_CONNECTION_TYPE}
+      - VIRTUAL_HOST=${HOST_NAME}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_HOST=${MYSQL_HOST}      
+    depends_on:
+      - omeka-db
+
+  omeka-db:
+    image: mariadb:10.6
+    restart: "no"
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+  omeka-db-admin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: "no"
+    ports:
+      - 8081:8081
+    environment:
+      - PMA_HOST=omeka-db
+    depends_on:
+      - omeka-db
