@@ -1,10 +1,10 @@
 ARG PHP_VERSION=8.1
 
-FROM webdevops/php-apache:${PHP_VERSION}
-
+FROM shinsenter/phpfpm-apache:php${PHP_VERSION}
+ARG PHP_VERSION
 # ==========================================================
 
-ENV WEB_DOCUMENT_ROOT="/var/www/omeka-s"
+ENV WEBHOME="/var/www/omeka-s"
 
 # ==========================================================
 
@@ -19,10 +19,7 @@ RUN apt-get -qq update && \
         ghostscript \
         ffmpeg \
         libvips \
-        dos2unix \
-        libxml2 libxml2-dev libcurl4-openssl-dev libmagickwand-dev \
         git && \
-        pecl install solr && \
     apt-get clean && \
     apt-get autoclean
 
@@ -30,7 +27,10 @@ RUN apt-get -qq update && \
 
 RUN a2dismod -f autoindex
 
-COPY ./config/dev/php-defaults.ini /opt/docker/etc/php/php.ini
+# Configure PHP
+RUN phpaddmod solr imagick intl iconv pdo pdo_mysql mysqli gd
+
+COPY ./config/dev/php-defaults.ini /etc/php/$PHP_VERSION/fpm/conf.d/99-defaults.ini
 
 # Override default ImageMagick policy
 COPY ./config/imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
@@ -40,7 +40,7 @@ COPY ./config/imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
 ARG OMEKA_S_VERSION="4.0.4"
 
 # Download Omeka-S release
-RUN usermod -u 1001 www-data && \
+RUN usermod -u 1000 www-data && \
     wget --no-verbose "https://github.com/omeka/omeka-s/releases/download/v${OMEKA_S_VERSION}/omeka-s-${OMEKA_S_VERSION}.zip" -O /var/www/omeka-s.zip && \
     unzip -q /var/www/omeka-s.zip -d /var/www/ && \
     rm /var/www/omeka-s.zip && \
@@ -52,6 +52,6 @@ COPY ./config/dev/local.config.php /var/www/omeka-s/config/
 
 # Add boot script to generate /var/www/omeka-s/config/database.ini based on ENV
 # see: https://github.com/just-containers/s6-overlay
-COPY --chmod=755 ./config/build_omeka_config.sh /entrypoint.d/build_omeka_config.sh
-RUN dos2unix /entrypoint.d/build_omeka_config.sh
-# # CMD [ "sleep", "infinity" ]
+COPY --chmod=755 ./config/build_omeka_config.sh /etc/cont-init.d/300-build_omeka_config
+
+CMD [ "sleep", "infinity" ]

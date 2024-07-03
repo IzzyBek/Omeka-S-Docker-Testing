@@ -1,4 +1,4 @@
-#!/command/with-contenv bash
+# !/command/with-contenv bash
 rm -f /var/www/omeka-s/config/database.ini
 echo "user     = \"$MYSQL_USER\"" >/var/www/omeka-s/config/database.ini
 echo "password = \"$MYSQL_PASSWORD\"" >>/var/www/omeka-s/config/database.ini
