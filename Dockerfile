@@ -1,4 +1,4 @@
-ARG PHP_VERSION
+ARG PHP_VERSION=8.1
 
 FROM webdevops/php-apache:${PHP_VERSION}
 
@@ -38,7 +38,7 @@ COPY ./config/imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
 
 # ==========================================================
 
-ARG OMEKA_S_VERSION
+ARG OMEKA_S_VERSION="4.0.4"
 
 # Download Omeka-S release
 # user "application" created by webdevops/php-apache
