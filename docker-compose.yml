@@ -4,25 +4,19 @@ services:
   omeka-web:
     build:
       context: .
+      args:
+        OMEKA_S_VERSION : "4.0.4"
+        PHP_VERSION : 8.1
     restart: "no"
+    env_file: ".env"
+    
     ports:
       - 8080:80
     volumes:
       - ./files:/var/www/omeka-s/files
       - ./logs:/var/www/omeka-s/logs
       - ./modules:/var/www/omeka-s/modules
-      - ./themes:/var/www/omeka-s/themes
-    environment:
-      - EMAIL_HOST=${EMAIL_HOST}
-      - EMAIL_PORT=${EMAIL_PORT}
-      - EMAIL_USER=${EMAIL_USER}
-      - EMAIL_PASSWORD=${EMAIL_PASSWORD}
-      - EMAIL_CONNECTION_TYPE=${EMAIL_CONNECTION_TYPE}
-      - VIRTUAL_HOST=${HOST_NAME}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_HOST=${MYSQL_HOST}      
+      - ./themes:/var/www/omeka-s/themes   
     depends_on:
       - omeka-db
 

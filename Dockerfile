@@ -1,4 +1,4 @@
-ARG PHP_VERSION=8.1
+ARG PHP_VERSION
 
 FROM webdevops/php-apache:${PHP_VERSION}
 
@@ -30,28 +30,31 @@ RUN apt-get -qq update && \
 
 RUN a2dismod -f autoindex
 
-COPY ./config/dev/php-defaults.ini /opt/docker/etc/php/php.ini
+# Override default PHP configuration
+COPY ./config/prod/php-defaults.ini /opt/docker/etc/php/php.ini
 
 # Override default ImageMagick policy
 COPY ./config/imagemagick-policy.xml /etc/ImageMagick-6/policy.xml
 
 # ==========================================================
 
-ARG OMEKA_S_VERSION="4.0.4"
+ARG OMEKA_S_VERSION
 
 # Download Omeka-S release
-RUN usermod -u 1001 www-data && \
-    wget --no-verbose "https://github.com/omeka/omeka-s/releases/download/v${OMEKA_S_VERSION}/omeka-s-${OMEKA_S_VERSION}.zip" -O /var/www/omeka-s.zip && \
+# user "application" created by webdevops/php-apache
+RUN wget --no-verbose "https://github.com/omeka/omeka-s/releases/download/v${OMEKA_S_VERSION}/omeka-s-${OMEKA_S_VERSION}.zip" -O /var/www/omeka-s.zip && \
     unzip -q /var/www/omeka-s.zip -d /var/www/ && \
     rm /var/www/omeka-s.zip && \
-    chown -R www-data:www-data /var/www/omeka-s/logs /var/www/omeka-s/files
+    chown -R application:application /var/www/omeka-s/logs /var/www/omeka-s/files
 
 # Set default configuration
-COPY ./config/dev/.htaccess /var/www/omeka-s/
-COPY ./config/dev/local.config.php /var/www/omeka-s/config/
+COPY ./config/prod/.htaccess /var/www/omeka-s/
+COPY ./config/prod/local.config.php /var/www/omeka-s/config/
 
 # Add boot script to generate /var/www/omeka-s/config/database.ini based on ENV
 # see: https://github.com/just-containers/s6-overlay
 COPY --chmod=755 ./config/build_omeka_config.sh /entrypoint.d/build_omeka_config.sh
+
+# Convert line endings to Unix (For Windows compatibility)
 RUN dos2unix /entrypoint.d/build_omeka_config.sh
-# # CMD [ "sleep", "infinity" ]
+
