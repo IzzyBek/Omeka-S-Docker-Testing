@@ -1,40 +1,71 @@
+
 # Omeka-S-Docker
 
-Omeka-S using Docker (Ubuntu + PHP-FPM + Apache2). Based on [shinsenter/php](https://github.com/shinsenter/php).
+This repository provides a Docker setup for Omeka-S, utilizing Ubuntu, PHP, and Apache2. It is based on [webdevops/php-apache](https://github.com/webdevops/Dockerfile).
 
-Use `docker compose up` to start the container. The Omeka-S installation is available on [http://localhost:8080](http://localhost:8080).
+## Getting Started
+
+To start the container, run:
+
+```sh
+docker compose up
+```
+
+Once started, you can access the Omeka-S installation at [http://localhost:8080](http://localhost:8080) and PHPMyAdmin at [http://localhost:8081](http://localhost:8081).
 
 ## Configuration
 
-Copy `example.env` to `.env` and update the option values.
+### Setting Up Environment Variables
 
+First, copy the `example.env` file to `.env` and update the values as needed:
+
+```sh
+cp example.env .env
 ```
-# mysql/mariadb configuration
-MYSQL_ROOT_PASSWORD=WbFJmhq.ibJG6eHkoq.m
+
+Update the `.env` file with your specific configuration:
+
+```sh
+# MySQL/MariaDB configuration
+MYSQL_ROOT_PASSWORD=your_root_password
 MYSQL_DATABASE=omeka_db
 MYSQL_USER=omeka_usr
-MYSQL_PASSWORD=BnY7m3NmjRD4NnDyf_2c
+MYSQL_PASSWORD=your_password
 MYSQL_HOST=omeka-db
-# omeka-s smtp configuration
-# see: https://docs.laminas.dev/laminas-mail/transport/smtp-options/
+
+# Omeka-S SMTP configuration
+# For more details, see: https://docs.laminas.dev/laminas-mail/transport/smtp-options/
 EMAIL_HOST=smtp.example.com
 EMAIL_PORT=587
-EMAIL_USER=
-EMAIL_PASSWORD=
+EMAIL_USER=your_email_user
+EMAIL_PASSWORD=your_email_password
 EMAIL_CONNECTION_TYPE=tls
 HOST_NAME=example.com
 ```
 
-The Docker container creates a `database.ini` config file at startup based on the ENV values.
+These environment variables are used to set up the necessary configuration for the Docker container. The `database.ini` config file is automatically generated at startup using the `build_omeka_config.sh` script based on these values.
 
+## Customizing Build Arguments
 
-## Build arguments
+You can specify the PHP and Omeka-S versions in the `docker-compose.yaml` file. The default versions are:
 
-The PHP and Omeka-S version can be changed using build arguments. The defaults are:
+```sh
+PHP_VERSION=8.1
+OMEKA_S_VERSION="4.0.4"
+```
 
-    PHP_VERSION=8.1
-    OMEKA_S_VERSION=4.0.4
+### Note
 
-You can easily build custom versions using this command:
+Database updates might be required for newer versions of Omeka-S.
 
-    docker build --build-arg="PHP_VERSION=8.2" --build-arg="OMEKA_S_VERSION=4.1.0-rc" --tag omeka_s_test .
+To build with custom versions, modify the `docker-compose.yaml` file as follows:
+
+```yaml
+args:
+  OMEKA_S_VERSION: "<your_version>"
+  PHP_VERSION: <your_version>
+```
+
+Replace `<your_version>` with the desired versions of PHP and Omeka-S.
+
+By following these steps, you can configure and customize your Omeka-S Docker environment efficiently.
