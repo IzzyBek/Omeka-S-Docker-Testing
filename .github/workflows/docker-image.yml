@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         php-version: [8.1, 8.2, 8.3]
-        omeka-s-version: ["v4.0.4", "v4.1.0", "v4.1.1"]
+        omeka-s-version: ["4.0.4", "4.1.0", "4.1.1"]
         # to specify combinations please read include/exlude 
         # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymatrixinclude
         # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#jobsjob_idstrategymatrixexclude
@@ -37,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/omeka-s-docker:phpv${{ matrix.php-version}}-omeka-s-${{ matrix.omeka-s-version}}
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/omeka-s-docker:php-v${{ matrix.php-version}}-omeka-s-v${{ matrix.omeka-s-version}}
           build-args: |
             PHP_VERSION=${{ matrix.php-version}}
             OMEKA_S_VERSION=${{ matrix.omeka-s-version}}
