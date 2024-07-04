@@ -37,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: ${{ vars.DOCKERHUB_USERNAME }}/Omeka-S-docker:phpV${{ matrix.php-version}}-omeka-s-${{ matrix.omeka-s-version}}
+          tags: ${{ vars.DOCKERHUB_USERNAME }}/Omeka-S-docker:phpv${{ matrix.php-version}}-omeka-s-${{ matrix.omeka-s-version}}
           build-args: |
             PHP_VERSION=${{ matrix.php-version}}
             OMEKA_S_VERSION=${{ matrix.omeka-s-version}}
